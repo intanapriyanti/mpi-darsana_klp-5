@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Dunia Enam Darsana - MPI Agama Hindu Kelas XI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                        },
+                        temple: {
+                            800: '#1e1b18',
+                            900: '#120f0d',
+                        }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styling & Visual Effects */
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-title {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Glow & Pulse Animation */
+        .glow-amber {
+            box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.4);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.4);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.4);
+        }
+        .glow-purple {
+            box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.4);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .animate-pulse-ring {
+            animation: pulse-ring 3s infinite ease-in-out;
+        }
+
+        /* Ancient Parchment Scroll Style */
+        .parchment-bg {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-slate-900">
+
+    <!-- Top Navigation & Progress Status Bar -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-amber-500/20 px-4 py-3 shadow-lg">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
+            <!-- Logo & Title -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('home')">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 to-yellow-400 flex items-center justify-center shadow-lg shadow-amber-500/20 text-slate-950 font-bold text-xl">
+                    <i class="fa-solid font-bold fa-compass animate-spin-slow"></i>
+                </div>
+                <div>
+                    <h1 class="font-title text-base sm:text-lg font-bold text-amber-400 tracking-wide leading-tight">DUNIA DARSANA</h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">Pendidikan Agama Hindu SMA/SMK XI</p>
+                </div>
+            </div>
+
+            <!-- Compass & Crystal Bar -->
+            <div class="flex items-center space-x-4 bg-slate-900/80 px-4 py-1.5 rounded-full border border-amber-500/30">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs text-amber-200/80 font-semibold uppercase tracking-wider hidden sm:inline">Kristal Jnana:</span>
+                    <div class="flex space-x-1.5" id="crystal-bar">
+                        <!-- Crystals injected dynamically -->
+                    </div>
+                </div>
+                <div class="h-4 w-px bg-slate-700"></div>
+                <div class="text-xs font-bold text-amber-400 flex items-center space-x-1">
+                    <i class="fa-solid fa-gem text-amber-400"></i>
+                    <span id="crystal-count-text">0/6</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleAudio()" id="audio-btn" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 transition" title="Efek Suara">
+                    <i class="fa-solid fa-volume-high" id="audio-icon"></i>
+                </button>
+                <button onclick="openModal('modal-materi')" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 text-xs font-semibold px-3 flex items-center gap-1.5">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span class="hidden md:inline">Glosarium</span>
+                </button>
+                <button onclick="openModal('modal-pencapaian')" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 text-xs font-semibold px-3 flex items-center gap-1.5">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span class="hidden md:inline">Prestasi</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8">
+
+        <!-- VIEW 1: HOME PAGE / HERO SPLASH -->
+        <section id="view-home" class="view-section space-y-8 py-4">
+            <div class="relative rounded-3xl p-6 sm:p-10 md:p-12 overflow-hidden border border-amber-500/30 bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 shadow-2xl">
+                <!-- Background decoration overlay -->
+                <div class="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+                    <!-- Left Hero Content -->
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs sm:text-sm font-semibold">
+                            <i class="fa-solid fa-dharmachakra animate-spin-slow"></i> Media Pembelajaran Interaktif Agama Hindu
+                        </div>
+
+                        <h1 class="font-title text-3xl sm:text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-500 tracking-tight leading-tight">
+                            PETUALANGAN DUNIA DARSANA
+                        </h1>
+                        <p class="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl">
+                            Selamat datang, Sang Penjelajah Kebijaksanaan! Pegang teguh <span class="text-amber-400 font-semibold">Kompas Jnana</span> milikmu dan temukan <span class="text-amber-400 font-semibold">Enam Kristal Pengetahuan</span> dalam enam wilayah Sad Darsana untuk menyingkap rahasia realitas dan kebenaran sejati.
+                        </p>
+
+                        <!-- Hero Action Buttons -->
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+                            <button onclick="navigateTo('map')" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-slate-950 font-bold text-base shadow-xl shadow-amber-500/25 transition transform hover:-translate-y-0.5 flex items-center gap-2.5">
+                                <i class="fa-solid fa-play"></i> MULAI PETUALANGAN
+                            </button>
+                            <button onclick="openModal('modal-petunjuk')" class="px-5 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 font-semibold text-base transition flex items-center gap-2">
+                                <i class="fa-solid fa-compass"></i> PETUNJUK
+                            </button>
+                            <button onclick="openModal('modal-pencapaian')" class="px-5 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 font-semibold text-base transition flex items-center gap-2">
+                                <i class="fa-solid fa-trophy"></i> PENCAPAIAN
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Hero Interactive Card / Character Showcase -->
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="relative w-full max-w-md p-6 rounded-2xl parchment-bg border border-amber-500/40 text-center space-y-4 shadow-2xl">
+                            <div class="relative w-36 h-36 mx-auto rounded-full bg-slate-800/80 border-4 border-amber-400/80 flex items-center justify-center shadow-inner glow-amber">
+                                <i class="fa-solid fa-user-ninja text-6xl text-amber-400 animate-float"></i>
+                                <div class="absolute -bottom-2 bg-amber-500 text-slate-950 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                                    Brahmacari
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h2 class="font-title text-xl font-bold text-amber-300">Penjelajah Jnana</h2>
+                                <p class="text-xs text-slate-400 mt-1">Siswa SMA/SMK Kelas XI — Pencari Sad Darsana</p>
+                            </div>
+
+                            <!-- Student Name Input -->
+                            <div class="pt-2">
+                                <label class="block text-xs font-medium text-slate-400 text-left mb-1">Nama Penjelajah:</label>
+                                <input type="text" id="player-name-input" value="Siswa Dharma" onchange="updatePlayerName(this.value)" class="w-full bg-slate-900 border border-amber-500/40 rounded-lg px-3 py-2 text-sm text-amber-300 focus:outline-none focus:border-amber-400 font-semibold">
+                            </div>
+
+                            <!-- Progress Summary -->
+                            <div class="bg-slate-900/90 rounded-xl p-3 border border-slate-800 text-left space-y-2">
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-slate-400">Kemajuan Penjelajahan:</span>
+                                    <span id="home-progress-percent" class="text-amber-400 font-bold">0%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                                    <div id="home-progress-bar" class="bg-gradient-to-r from-amber-500 to-yellow-400 h-full w-0 transition-all duration-500"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objectives Banner -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-start gap-4">
+                    <div class="p-3 bg-amber-500/10 rounded-xl text-amber-400 text-xl"><i class="fa-solid fa-dharmachakra"></i></div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-200">Enam Sistem Astika</h3>
+                        <p class="text-xs text-slate-400 mt-1">Pelajari Nyaya, Vaisheshika, Samkhya, Yoga, Mimamsa, dan Vedanta secara terstruktur.</p>
+                    </div>
+                </div>
+                <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-start gap-4">
+                    <div class="p-3 bg-cyan-500/10 rounded-xl text-cyan-400 text-xl"><i class="fa-solid fa-puzzle-piece"></i></div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-200">Tantangan Interaktif</h3>
+                        <p class="text-xs text-slate-400 mt-1">Pintu Logika, Analisis Padartha, Tri Guna, dan Tangga Ashtanga Yoga.</p>
+                    </div>
+                </div>
+                <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-start gap-4">
+                    <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 text-xl"><i class="fa-solid fa-certificate"></i></div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-200">Evaluasi & Sertifikat</h3>
+                        <p class="text-xs text-slate-400 mt-1">Uji pemahamanmu di Candi Utama untuk meraih Gelar Sertifikat Mahaguru Darsana.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: WORLD MAP / LEVEL SELECTOR -->
+        <section id="view-map" class="view-section hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="font-title text-2xl sm:text-3xl font-bold text-amber-400">PETA DUNIA DARSANA</h2>
+                    <p class="text-xs sm:text-sm text-slate-400">Pilih wilayah petualangan untuk mulai menjelajahi dan mengumpulkan Kristal Pengetahuan.</p>
+                </div>
+                <button onclick="navigateTo('home')" class="self-start md:self-auto px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold border border-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Pembuka
+                </button>
+            </div>
+
+            <!-- Map Container Grid -->
+            <div class="relative rounded-3xl p-6 md:p-8 bg-slate-950 border border-amber-500/30 overflow-hidden shadow-2xl min-h-[500px]">
+                <!-- Background Map Grid Pattern -->
+                <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:24px_24px]"></div>
+
+                <!-- Level Nodes Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+                    
+                    <!-- Level 1 Node -->
+                    <div id="card-level-1" onclick="selectLevel(1)" class="level-card rounded-2xl p-5 border transition-all cursor-pointer transform hover:-translate-y-1 bg-slate-900 border-amber-500/40 hover:border-amber-400 glow-amber">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">LEVEL 1</span>
+                            <div id="status-icon-1" class="text-amber-400 text-lg"><i class="fa-solid fa-unlock"></i></div>
+                        </div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-torii-gate"></i></div>
+                            <div>
+                                <h3 class="font-title font-bold text-slate-100 text-base">Gerbang Darsana</h3>
+                                <p class="text-xs text-amber-400/80">Pengenalan & Sad Darsana</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 line-clamp-2">Pahami arti Darsana dari akar kata Sanskerta dṛś dan posisi 6 sistem filsafat Astika.</p>
+                        <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Hadiah:</span>
+                            <span class="text-amber-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-gem"></i> Kristal Darsana</span>
+                        </div>
+                    </div>
+
+                    <!-- Level 2 Node -->
+                    <div id="card-level-2" onclick="selectLevel(2)" class="level-card rounded-2xl p-5 border transition-all cursor-pointer transform hover:-translate-y-1 bg-slate-900/60 border-slate-800 opacity-80 hover:opacity-100">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">LEVEL 2</span>
+                            <div id="status-icon-2" class="text-slate-500 text-lg"><i class="fa-solid fa-lock"></i></div>
+                        </div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-tree"></i></div>
+                            <div>
+                                <h3 class="font-title font-bold text-slate-100 text-base">Hutan Nyaya</h3>
+                                <p class="text-xs text-cyan-400/80">Logika & 4 Pramana</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 line-clamp-2">Jelajahi penalaran rasional Gautama dan pecahkan Pintu Logika melalui 4 Pramana sejati.</p>
+                        <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Hadiah:</span>
+                            <span class="text-cyan-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-gem"></i> Kristal Nyaya</span>
+                        </div>
+                    </div>
+
+                    <!-- Level 3 Node -->
+                    <div id="card-level-3" onclick="selectLevel(3)" class="level-card rounded-2xl p-5 border transition-all cursor-pointer transform hover:-translate-y-1 bg-slate-900/60 border-slate-800 opacity-80 hover:opacity-100">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">LEVEL 3</span>
+                            <div id="status-icon-3" class="text-slate-500 text-lg"><i class="fa-solid fa-lock"></i></div>
+                        </div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-flask"></i></div>
+                            <div>
+                                <h3 class="font-title font-bold text-slate-100 text-base">Lab Vaisheshika</h3>
+                                <p class="text-xs text-emerald-400/80">7 Padartha & Paramāṇu</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 line-clamp-2">Bedah kategori realitas (Padartha) Kanada dan konsep atomisme alam semesta.</p>
+                        <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Hadiah:</span>
+                            <span class="text-emerald-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-gem"></i> Kristal Vaisheshika</span>
+                        </div>
+                    </div>
+
+                    <!-- Level 4 Node -->
+                    <div id="card-level-4" onclick="selectLevel(4)" class="level-card rounded-2xl p-5 border transition-all cursor-pointer transform hover:-translate-y-1 bg-slate-900/60 border-slate-800 opacity-80 hover:opacity-100">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">LEVEL 4</span>
+                            <div id="status-icon-4" class="text-slate-500 text-lg"><i class="fa-solid fa-lock"></i></div>
+                        </div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-mountain text-purple-400"></i></div>
+                            <div>
+                                <h3 class="font-title font-bold text-slate-100 text-base">Lembah Samkhya</h3>
+                                <p class="text-xs text-purple-400/80">Purusha, Prakriti & Tri Guna</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 line-clamp-2">Pahami evolusi 25 Tattva Kapila Muni serta keseimbangan Tri Guna dalam alam semesta.</p>
+                        <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Hadiah:</span>
+                            <span class="text-purple-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-gem"></i> Kristal Samkhya</span>
+                        </div>
+                    </div>
+
+                    <!-- Level 5 Node -->
+                    <div id="card-level-5" onclick="selectLevel(5)" class="level-card rounded-2xl p-5 border transition-all cursor-pointer transform hover:-translate-y-1 bg-slate-900/60 border-slate-800 opacity-80 hover:opacity-100">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30">LEVEL 5</span>
+                            <div id="status-icon-5" class="text-slate-500 text-lg"><i class="fa-solid fa-lock"></i></div>
+                        </div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-om"></i></div>
+                            <div>
+                                <h3 class="font-title font-bold text-slate-100 text-base">Puncak Yoga</h3>
+                                <p class="text-xs text-rose-400/80">Ashtanga Yoga Patanjali</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 line-clamp-2">Praktikkan penenangan gejolak pikiran (Citta Vritti Nirodha) dan 8 tangga disiplin spiritual.</p>
+                        <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Hadiah:</span>
+                            <span class="text-rose-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-gem"></i> Kristal Yoga</span>
+                        </div>
+                    </div>
+
+                    <!-- Level 6 Node -->
+                    <div id="card-level-6" onclick="selectLevel(6)" class="level-card rounded-2xl p-5 border transition-all cursor-pointer transform hover:-translate-y-1 bg-slate-900/60 border-slate-800 opacity-80 hover:opacity-100">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">LEVEL 6</span>
+                            <div id="status-icon-6" class="text-slate-500 text-lg"><i class="fa-solid fa-lock"></i></div>
+                        </div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-gopuram"></i></div>
+                            <div>
+                                <h3 class="font-title font-bold text-slate-100 text-base">Kuil Mimamsa & Vedanta</h3>
+                                <p class="text-xs text-indigo-400/80">Ritual Yajna & Kebijaksanaan Jnana</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-400 line-clamp-2">Bandingkan kewajiban Dharma ritualistik dengan pencapaian tertinggi Brahman, Atman & Moksha.</p>
+                        <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+                            <span class="text-slate-500">Hadiah:</span>
+                            <span class="text-indigo-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-gem"></i> Kristal Vedānta</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Final Evaluation Gate Node -->
+                <div class="mt-8 p-6 rounded-2xl bg-gradient-to-r from-amber-950/80 via-slate-900 to-amber-950/80 border border-amber-500/50 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 text-center md:text-left">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/50 text-amber-400 flex items-center justify-center text-3xl shrink-0">
+                            <i class="fa-solid fa-scroll text-amber-400 animate-pulse"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-title text-xl font-bold text-amber-300">CANDI JNANA — EVALUASI FINAL</h3>
+                            <p class="text-xs text-slate-300 mt-1">Selesaikan 6 level petualangan di atas untuk membuka Ujian Komprehensif dan klaim Sertifikat Penjelajah Darsana!</p>
+                        </div>
+                    </div>
+                    <button id="btn-final-exam" onclick="startFinalEvaluation()" disabled class="w-full md:w-auto px-6 py-3 rounded-xl bg-slate-800 text-slate-500 font-bold text-sm border border-slate-700 cursor-not-allowed transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-lock"></i> UJIAN EVALUASI (Terkunci)
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: DYNAMIC LEVEL ADVENTURE SCREEN -->
+        <section id="view-level" class="view-section hidden space-y-6">
+            <!-- Header Level Nav -->
+            <div class="flex items-center justify-between gap-3 bg-slate-900/90 p-4 rounded-2xl border border-amber-500/30">
+                <button onclick="navigateTo('map')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-semibold border border-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-map"></i> Peta Wilayah
+                </button>
+                <div class="text-center">
+                    <span id="level-badge-tag" class="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">LEVEL 1</span>
+                    <h2 id="level-title-display" class="font-title text-lg sm:text-xl font-bold text-amber-300">Gerbang Darsana</h2>
+                </div>
+                <div id="level-crystal-indicator" class="text-amber-400 text-xl" title="Status Kristal">
+                    <i class="fa-regular fa-gem"></i>
+                </div>
+            </div>
+
+            <!-- Content Area: Split into Material Scroll & Challenge -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Column: Gulungan Kitab Pengetahuan (Materi) -->
+                <div class="lg:col-span-7 space-y-5">
+                    <div class="parchment-bg rounded-2xl p-6 border border-amber-500/30 shadow-xl space-y-4 max-h-[600px] overflow-y-auto pr-3">
+                        <div class="flex items-center gap-2 border-b border-amber-500/20 pb-3">
+                            <i class="fa-solid fa-scroll text-amber-400 text-xl"></i>
+                            <h3 class="font-title text-lg font-bold text-amber-400">Gulungan Pengetahuan Darsana</h3>
+                        </div>
+
+                        <!-- Dynamic Material Text Injected Here -->
+                        <div id="level-material-content" class="text-sm text-slate-300 space-y-4 leading-relaxed">
+                            <!-- Dynamic Content -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Tantangan & Kuis Interaktif -->
+                <div class="lg:col-span-5 space-y-5">
+                    <div class="bg-slate-900 rounded-2xl p-6 border border-amber-500/30 shadow-xl space-y-5">
+                        <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+                            <i class="fa-solid fa-puzzle-piece text-amber-400 text-xl"></i>
+                            <h3 class="font-title text-base font-bold text-amber-300">Tantangan & Kuis Wilayah</h3>
+                        </div>
+
+                        <!-- Dynamic Challenge / Quiz Box -->
+                        <div id="level-challenge-box" class="space-y-4">
+                            <!-- Interactive Quiz / Activity Controls injected here -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- VIEW 4: FINAL EVALUATION & CERTIFICATE VIEW -->
+        <section id="view-eval" class="view-section hidden space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                    <h2 class="font-title text-2xl sm:text-3xl font-bold text-amber-400">CANDI JNANA — UJIAN EVALUASI</h2>
+                    <p class="text-xs sm:text-sm text-slate-400">Uji pengetahuanmu mengenai Sad Darsana dan peroleh Sertifikat Mahaguru Darsana.</p>
+                </div>
+                <button onclick="navigateTo('map')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold border border-slate-700">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Peta
+                </button>
+            </div>
+
+            <!-- Exam Quiz Container -->
+            <div id="exam-container" class="max-w-3xl mx-auto bg-slate-900 p-6 sm:p-8 rounded-3xl border border-amber-500/30 shadow-2xl space-y-6">
+                <!-- Progress Header -->
+                <div class="flex justify-between items-center text-xs font-bold text-amber-400">
+                    <span id="exam-progress-text">Soal 1 dari 10</span>
+                    <span id="exam-score-live">Skor: 0</span>
+                </div>
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="exam-progress-bar" class="bg-amber-400 h-full w-10 transition-all"></div>
+                </div>
+
+                <!-- Question Text -->
+                <div class="space-y-2">
+                    <span id="exam-topic-tag" class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase">Topik Nyaya</span>
+                    <h3 id="exam-question-text" class="text-base sm:text-lg font-bold text-slate-100 leading-snug">
+                         Loading soal...
+                    </h3>
+                </div>
+
+                <!-- Options Grid -->
+                <div id="exam-options-grid" class="grid grid-cols-1 gap-3">
+                    <!-- Options injected dynamically -->
+                </div>
+
+                <!-- Next / Submit Button -->
+                <div class="pt-4 flex justify-end">
+                    <button id="btn-exam-next" onclick="nextExamQuestion()" disabled class="px-6 py-3 rounded-xl bg-slate-800 text-slate-500 font-bold text-sm border border-slate-700 cursor-not-allowed transition">
+                        Selanjutnya <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESULT & CERTIFICATE DISPLAY (Hidden until finished) -->
+            <div id="exam-result-box" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="p-8 rounded-3xl bg-slate-900 border border-amber-500/40 text-center space-y-6 shadow-2xl">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-amber-500/20 border-2 border-amber-400 text-amber-400 flex items-center justify-center text-4xl glow-amber">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h3 class="font-title text-2xl sm:text-3xl font-bold text-amber-300">SELAMAT! PETUALANGAN SELESAI</h3>
+                        <p class="text-sm text-slate-300">Kamu telah menuntaskan penjelajahan Sad Darsana dan membuktikan pengetahuanmu!</p>
+                    </div>
+
+                    <!-- Score Card -->
+                    <div class="inline-grid grid-cols-3 gap-4 bg-slate-950 p-4 rounded-2xl border border-slate-800 text-center">
+                        <div>
+                            <p class="text-xs text-slate-400">Skor Akhir</p>
+                            <p id="result-score" class="font-title text-2xl font-bold text-amber-400">100</p>
+                        </div>
+                        <div class="border-x border-slate-800">
+                            <p class="text-xs text-slate-400">Jawaban Benar</p>
+                            <p id="result-correct" class="font-title text-2xl font-bold text-emerald-400">10/10</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-400">Gelar Kebijaksanaan</p>
+                            <p id="result-title" class="font-title text-sm font-bold text-cyan-300 mt-1">Mahaguru Darsana</p>
+                        </div>
+                    </div>
+
+                    <!-- CERTIFICATE CANVAS / CARD -->
+                    <div id="printable-certificate" class="parchment-bg p-8 rounded-2xl border-4 border-amber-500/60 text-center space-y-4 relative overflow-hidden shadow-2xl">
+                        <div class="absolute -top-12 -right-12 w-40 h-40 bg-amber-500/10 rounded-full blur-xl pointer-events-none"></div>
+                        <p class="text-xs font-bold tracking-widest text-amber-400/80 uppercase">SERTIFIKAT PENCAPAIAN JNANA</p>
+                        <h4 class="font-title text-xl sm:text-2xl font-bold text-amber-300">PENDIDIKAN AGAMA HINDU DAN BUDI PEKERTI</h4>
+                        <p class="text-xs text-slate-300">Diberikan secara penuh kehormatan kepada:</p>
+                        
+                        <div id="cert-player-name" class="font-title text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-500 py-1 border-b border-amber-500/30 inline-block px-8">
+                            Siswa Dharma
+                        </div>
+
+                        <p class="text-xs text-slate-300 max-w-xl mx-auto leading-relaxed">
+                            Atas keberhasilan menguasai materi filsafat Hindu <strong class="text-amber-400">Sad Darsana</strong> (Nyaya, Vaisheshika, Samkhya, Yoga, Mimamsa, Vedanta) dan lulus Ujian Evaluasi pada Media Pembelajaran Interaktif.
+                        </p>
+
+                        <div class="flex justify-between items-center pt-6 text-[11px] text-slate-400 border-t border-amber-500/20">
+                            <div>
+                                <p class="font-semibold text-slate-300">Kurikulum Merdeka SMA/SMK XI</p>
+                                <p>Materi: Darsana Kebijaksanaan Hindu</p>
+                            </div>
+                            <div class="text-amber-400 font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-dharmachakra"></i> Sad Darsana Master
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Certificate Print / Restart Buttons -->
+                    <div class="flex flex-wrap justify-center gap-3">
+                        <button onclick="window.print()" class="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-print"></i> Cetak / Simpan Sertifikat
+                        </button>
+                        <button onclick="resetPetualangan()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm border border-slate-700 flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i> Ulangi Petualangan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="glass-panel border-t border-slate-800 py-4 px-4 text-center text-xs text-slate-500">
+        <p>© 2026 Media Pembelajaran Interaktif Agama Hindu — Materi Darsana (Kelas XI SMA/SMK)</p>
+    </footer>
+
+    <!-- MODAL OVERLAYS -->
+    
+    <!-- Modal 1: Petunjuk -->
+    <div id="modal-petunjuk" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl relative">
+            <button onclick="closeModal('modal-petunjuk')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex items-center gap-2 text-amber-400 border-b border-slate-800 pb-3">
+                <i class="fa-solid fa-compass text-xl"></i>
+                <h3 class="font-title font-bold text-lg">Petunjuk Petualangan</h3>
+            </div>
+            <ul class="text-xs text-slate-300 space-y-2.5 leading-relaxed list-disc list-inside">
+                <li><strong class="text-amber-400">Jelajahi Level:</strong> Mulai dari Level 1 (Gerbang Darsana) untuk membuka wilayah filsafat berikutnya secara bertahap.</li>
+                <li><strong class="text-amber-400">Baca Gulungan Kitab:</strong> Pelajari pokok-pokok ajaran, tokoh, dan analogi di setiap wilayah.</li>
+                <li><strong class="text-amber-400">Selesaikan Tantangan:</strong> Jawab kuis dan mini game di tiap level untuk mendapatkan <strong class="text-amber-400">Kristal Pengetahuan</strong>.</li>
+                <li><strong class="text-amber-400">Buka Candi Utama:</strong> Setelah mengumpulkan 6 Kristal, kamu dapat mengikuti Evaluasi Final 10 soal untuk mengklaim Sertifikat Kelulusan.</li>
+            </ul>
+            <div class="pt-2 text-right">
+                <button onclick="closeModal('modal-petunjuk')" class="px-5 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs">Paham, Mulai!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Pencapaian -->
+    <div id="modal-pencapaian" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl relative">
+            <button onclick="closeModal('modal-pencapaian')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex items-center gap-2 text-amber-400 border-b border-slate-800 pb-3">
+                <i class="fa-solid fa-trophy text-xl"></i>
+                <h3 class="font-title font-bold text-lg">Prestasi Penjelajah</h3>
+            </div>
+            <div id="achievements-list" class="space-y-3">
+                <!-- Injected dynamically -->
+            </div>
+            <div class="pt-2 text-right">
+                <button onclick="closeModal('modal-pencapaian')" class="px-5 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs border border-slate-700">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Glosarium / Ringkasan Materi -->
+    <div id="modal-materi" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-2xl w-full space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <button onclick="closeModal('modal-materi')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="flex items-center gap-2 text-amber-400 border-b border-slate-800 pb-3">
+                <i class="fa-solid fa-book-open text-xl"></i>
+                <h3 class="font-title font-bold text-lg">Glosarium Ringkas Sad Darsana</h3>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-300">
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-amber-400">1. Nyaya (Maharshi Gautama)</span>
+                    <p class="text-slate-400 mt-1">Filsafat logika dan penalaran rasional. Mengakui 4 Pramana (Pratyaksa, Anumana, Upamana, Sabda).</p>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-cyan-400">2. Vaisheshika (Maharshi Kanada)</span>
+                    <p class="text-slate-400 mt-1">Filsafat realitas kategoris dan teori atom (Paramāṇu). Mengkaji 7 Padartha.</p>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-purple-400">3. Samkhya (Maharshi Kapila)</span>
+                    <p class="text-slate-400 mt-1">Filsafat dualistis Purusha (kesadaran) & Prakriti (materi), 25 Tattva, dan Tri Guna.</p>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-rose-400">4. Yoga (Maharshi Patanjali)</span>
+                    <p class="text-slate-400 mt-1">Praktik pengendalian pikiran (Citta Vritti Nirodha) melalui 8 tangga Ashtanga Yoga.</p>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-amber-400">5. Mimamsa (Maharshi Jaimini)</span>
+                    <p class="text-slate-400 mt-1">Filsafat aksi ritual Veda (Karma Kanda), Yajna, dan pemenuhan kewajiban Dharma.</p>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="font-bold text-indigo-400">6. Vedanta (Maharshi Badarayana)</span>
+                    <p class="text-slate-400 mt-1">Filsafat penafsiran Upanishad (Jnana Kanda), hakikat Brahman, Atman, Maya, dan Moksha.</p>
+                </div>
+            </div>
+            <div class="pt-2 text-right">
+                <button onclick="closeModal('modal-materi')" class="px-5 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs border border-slate-700">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        
+        // WEB AUDIO SYNTHESIZER FOR GAME SOUND EFFECTS
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.setValueAtTime(180, now + 0.15);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'unlock') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.4);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            }
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('audio-icon');
+            if (soundEnabled) {
+                icon.className = "fa-solid fa-volume-high";
+                playSound('click');
+            } else {
+                icon.className = "fa-solid fa-volume-xmark";
+            }
+        }
+
+
+        // GAME STATE MANAGEMENT
+        const state = {
+            playerName: "Siswa Dharma",
+            progress: [false, false, false, false, false, false], // Level 1 to 6 completion status
+            currentLevel: 1,
+            examIndex: 0,
+            examScore: 0,
+            examAnswers: [],
+        };
+
+        // LEVEL DATA & MATERIALS
+        const levelData = {
+            1: {
+                title: "Gerbang Darsana",
+                subtitle: "Pengenalan Hakikat Darsana & Sad Darsana",
+                color: "amber",
+                icon: "fa-torii-gate",
+                crystalName: "Kristal Darsana",
+                material: `
+                    <p class="text-base font-semibold text-amber-300">Selamat datang di Gerbang Utama Pengetahuan!</p>
+                    <p>Secara etimologis, kata <strong>Darsana</strong> berasal dari urat kata bahasa Sanskerta <em>“dṛś”</em> yang berarti melihat, memandang, atau mengamati. Dalam filsafat Hindu, Darsana bermakna pandangan filosofis mendalam untuk memahami hakikat kebenaran, alam semesta, dan tujuan tertinggi kehidupan manusia.</p>
+                    
+                    <div class="p-4 rounded-xl bg-slate-950 border border-amber-500/30 my-3 space-y-2">
+                        <span class="font-bold text-amber-400 text-xs uppercase tracking-wider">Analogi Perjalanan:</span>
+                        <p class="italic text-slate-300">"Jika kehidupan adalah sebuah perjalanan panjang menembus kegelapan, maka Darsana adalah berbagai obor pemikiran yang menerangi jalan agar manusia tidak tersesat mencapai kebenaran."</p>
+                    </div>
+
+                    <p>Darsana dikelompokkan ke dalam <strong>Astika</strong> (kelompok yang menerima otoritas Kitab Suci Veda). Enam sistem filsafat Astika utama dikenal dengan sebutan <strong>Sad Darsana</strong>:</p>
+                    <ol class="list-decimal list-inside space-y-1.5 pl-2 text-amber-200">
+                        <li><strong>Nyaya:</strong> Sistem logika dan metode penalaran kebenaran.</li>
+                        <li><strong>Vaisheshika:</strong> Sistem analisis realitas fisik dan teori atom.</li>
+                        <li><strong>Samkhya:</strong> Sistem dualisme kesadaran (Purusha) dan materi (Prakriti).</li>
+                        <li><strong>Yoga:</strong> Sistem disiplin meditasi dan pengendalian pikiran.</li>
+                        <li><strong>Mimamsa:</strong> Sistem ajaran kewajiban ritualistik Veda (Karma Kanda).</li>
+                        <li><strong>Vedanta:</strong> Sistem puncak pengetahuan metafisika Upanishad (Jnana Kanda).</li>
+                    </ol>
+                `,
+                quiz: [
+                    {
+                        q: "1. Apa arti kata Darsana berdasarkan akar kata Sanskerta 'dṛś'?",
+                        options: [
+                            "A. Upacara dan tarian keagamaan",
+                            "B. Melihat, memandang, atau sistem pandangan filosofis",
+                            "C. Menyanyikan lagu pujian suci",
+                            "D. Membangun tempat ibadah"
+                        ],
+                        correct: 1,
+                        explanation: "Darsana berasal dari 'dṛś' yang berarti melihat/memandang, merujuk pada sistem pemikiran atau pandangan filosofis Hindu."
+                    },
+                    {
+                        q: "2. Berapakah jumlah sistem filsafat Hindu yang tergolong dalam Sad Darsana?",
+                        options: ["A. 4 Sistem", "B. 5 Sistem", "C. 6 Sistem", "D. 7 Sistem"],
+                        correct: 2,
+                        explanation: "Sad Darsana secara harfiah berarti 'Enam Pandangan Filsafat' (Sad = 6)."
+                    }
+                ]
+            },
+            2: {
+                title: "Hutan Nyaya",
+                subtitle: "Filsafat Logika & Empat Pramana",
+                color: "cyan",
+                icon: "fa-tree",
+                crystalName: "Kristal Nyaya",
+                material: `
+                    <p class="text-base font-semibold text-cyan-300">Memasuki Hutan Nyaya yang Penuh Teka-Teki Logika!</p>
+                    <p>Filsafat <strong>Nyaya</strong> didirikan oleh <strong>Maharshi Gautama</strong> (Akshapada Gautama). Nyaya berfokus pada logika, aturan penalaran rasional, dan metode untuk memperoleh pengetahuan yang sahih dan valid.</p>
+                    
+                    <p class="font-semibold text-amber-300 mt-2">Empat Cara Memperoleh Pengetahuan Benar (Pramana):</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-2">
+                        <div class="p-3 bg-slate-950 rounded-xl border border-cyan-500/30">
+                            <strong class="text-cyan-400">1. Pratyaksa (Persepsi)</strong>
+                            <p class="text-xs text-slate-400 mt-1">Pengetahuan langsung yang didapat melalui pengamatan pancaindra (melihat, mendengar, meraba).</p>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl border border-cyan-500/30">
+                            <strong class="text-cyan-400">2. Anumana (Inferensi)</strong>
+                            <p class="text-xs text-slate-400 mt-1">Penyimpulan logis berdasarkan tanda-tanda yang terlihat (misal: melihat asap maka menyimpulkan ada api).</p>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl border border-cyan-500/30">
+                            <strong class="text-cyan-400">3. Upamana (Analogi)</strong>
+                            <p class="text-xs text-slate-400 mt-1">Pengetahuan melalui perbandingan atau kesamaan dengan hal yang sudah dikenal sebelumnya.</p>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl border border-cyan-500/30">
+                            <strong class="text-cyan-400">4. Sabda (Kesaksian)</strong>
+                            <p class="text-xs text-slate-400 mt-1">Pengetahuan dari sumber terpercaya atau kitab suci yang otoritatif.</p>
+                        </div>
+                    </div>
+                `,
+                quiz: [
+                    {
+                        q: "Tantangan Pintu Logika: Jika seseorang berada di lereng bawah dan melihat asap tebal membumbung tinggi dari puncak gunung, lalu ia menyimpulkan bahwa di puncak gunung ada api, proses penalaran ini dinamakan...",
+                        options: [
+                            "A. Pratyaksa (Persepsi Langsung)",
+                            "B. Anumana (Penyimpulan/Inferensi)",
+                            "C. Upamana (Perbandingan)",
+                            "D. Sabda (Kesaksian Verbal)"
+                        ],
+                        correct: 1,
+                        explanation: "Anumana adalah kesimpulan logis berdasarkan pengamatan hubungan sebab-akibat (melihat asap -> menyimpulkan api)."
+                    }
+                ]
+            },
+            3: {
+                title: "Laboratorium Vaisheshika",
+                subtitle: "Realitas Kategoris & Atomism (Paramāṇu)",
+                color: "emerald",
+                icon: "fa-flask",
+                crystalName: "Kristal Vaisheshika",
+                material: `
+                    <p class="text-base font-semibold text-emerald-300">Analisis Kategori Keberadaan di Laboratorium Vaisheshika!</p>
+                    <p>Didirikan oleh <strong>Maharshi Kanada</strong> (Uluka). Vaisheshika melengkapi sistem Nyaya dengan menganalisis alam fisik melalui pengelompokan kategori realitas (<strong>Padartha</strong>) dan teori dasar partikel terkecil yang tak terbagi (<strong>Paramāṇu</strong> / Atom).</p>
+                    
+                    <p class="font-semibold text-amber-300 mt-2">Tujuh Padartha (Kategori Realitas):</p>
+                    <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-300 pl-2">
+                        <li><strong>Dravya (Substansi):</strong> Unsur pembentuk (tanah, air, api, udara, ether, waktu, ruang, atman, pikiran).</li>
+                        <li><strong>Guna (Kualitas):</strong> Sifat yang melekat pada substansi (warna, rasa, jumlah, ukuran).</li>
+                        <li><strong>Karma (Aktivitas):</strong> Pergerakan fisik objek.</li>
+                        <li><strong>Samanya (Keumuman):</strong> Sifat umum yang dimiliki banyak hal (universal).</li>
+                        <li><strong>Vishesha (Kekhususan):</strong> Ciri khusus yang membedakan satu hal unik dari yang lain.</li>
+                        <li><strong>Samavaya (Hubungan Inheren):</strong> Hubungan mutlak yang tidak terpisahkan (misal: warna putih dengan susu).</li>
+                        <li><strong>Abhava (Ketiadaan):</strong> Kategori mengenai ketidakberadaan sesuatu.</li>
+                    </ul>
+                `,
+                quiz: [
+                    {
+                        q: "Manakah di bawah ini yang merupakan contoh dari 'Samavaya' (Hubungan Inheren/Pertalian Tak Terpisahkan)?",
+                        options: [
+                            "A. Dua buah batu yang diletakkan bersebelahan di meja",
+                            "B. Hubungan antara kehangatan/panas dengan api",
+                            "C. Seseorang yang sedang berjalan cepat",
+                            "D. Ketiadaan air di padang pasir"
+                        ],
+                        correct: 1,
+                        explanation: "Samavaya adalah hubungan mutlak tak terpisahkan, seperti rasa panas yang inheren melekat pada api."
+                    }
+                ]
+            },
+            4: {
+                title: "Lembah Samkhya",
+                subtitle: "Dualisme Purusha, Prakriti & Tri Guna",
+                color: "purple",
+                icon: "fa-mountain",
+                crystalName: "Kristal Samkhya",
+                material: `
+                    <p class="text-base font-semibold text-purple-300">Menjelajahi Keseimbangan Dualitas di Lembah Samkhya!</p>
+                    <p>Filsafat <strong>Samkhya</strong> dirumuskan oleh <strong>Maharshi Kapila</strong>. Samkhya bersifat dualistis, mengajar alam semesta tercipta dari interaksi dua realitas abadi:</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-3">
+                        <div class="p-3 bg-slate-950 rounded-xl border border-purple-500/30">
+                            <strong class="text-purple-300">1. Purusha (Kesadaran Murni)</strong>
+                            <p class="text-xs text-slate-400 mt-1">Prinsip spiritual, abadi, tidak berubah, tidak berwujud, pengamat pasif.</p>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl border border-purple-500/30">
+                            <strong class="text-purple-300">2. Prakriti (Materi Asal)</strong>
+                            <p class="text-xs text-slate-400 mt-1">Prinsip material dinamis penyebab wujud fisik, terdiri dari 3 kualitas (Tri Guna).</p>
+                        </div>
+                    </div>
+
+                    <p class="font-semibold text-amber-300">Tiga Kualitas Pokok Alam (Tri Guna):</p>
+                    <ul class="list-disc list-inside text-xs text-slate-300 space-y-1 mt-1">
+                        <li><strong>Sattvam:</strong> Kualitas kesucian, terang, kedamaian, dan kebijaksanaan.</li>
+                        <li><strong>Rajas:</strong> Kualitas nafsu, dinamisme, ambisi, dan pergerakan.</li>
+                        <li><strong>Tamas:</strong> Kualitas kegelapan, kebodohan, malas, dan inersia.</li>
+                    </ul>
+                `,
+                quiz: [
+                    {
+                        q: "Seseorang yang memiliki ketenangan jiwa, suka menolong, jujur, dan senantiasa mencari pengetahuan suci didominasi oleh unsur Tri Guna yaitu...",
+                        options: ["A. Rajas", "B. Tamas", "C. Sattvam", "D. Ahamkara"],
+                        correct: 2,
+                        explanation: "Sattvam adalah sifat keheningan, kesucian, dan penerangan jiwa."
+                    }
+                ]
+            },
+            5: {
+                title: "Puncak Yoga",
+                subtitle: "Ashtanga Yoga & Pengendalian Mind/Citta",
+                color: "rose",
+                icon: "fa-om",
+                crystalName: "Kristal Yoga",
+                material: `
+                    <p class="text-base font-semibold text-rose-300">Mencapai Hening Jiwa di Puncak Yoga!</p>
+                    <p>Filsafat <strong>Yoga</strong> dirumuskan oleh <strong>Maharshi Patanjali</strong> dalam kitab <em>Yoga Sutra</em>. Yoga merupakan penerapan praktis dari teori filsafat Samkhya.</p>
+                    
+                    <blockquote class="p-3 bg-slate-950 rounded-xl border-l-4 border-rose-500 italic text-xs text-rose-200 my-2">
+                        "Yogas citta-vṛtti-nirodhaḥ" — Yoga adalah pengendalian gejolak pikiran.
+                    </blockquote>
+
+                    <p class="font-semibold text-amber-300 mt-2">Delapan Tangga Disiplin Yoga (Ashtanga Yoga):</p>
+                    <ol class="list-decimal list-inside text-xs text-slate-300 space-y-1 pl-2">
+                        <li><strong>Yama:</strong> Pengendalian diri etis terhadap lingkungan (Ahimsa, Satya, dll).</li>
+                        <li><strong>Niyama:</strong> Disiplin rohani pribadi (Sauca, Santosa, dll).</li>
+                        <li><strong>Asana:</strong> Sikap tubuh yang stabil dan nyaman.</li>
+                        <li><strong>Pranayama:</strong> Pengaturan irama nafas vital (Prana).</li>
+                        <li><strong>Pratyahara:</strong> Penarikan pancaindra dari objek luar.</li>
+                        <li><strong>Dharana:</strong> Konsentrasi pikiran pada satu titik.</li>
+                        <li><strong>Dhyana:</strong> Meditasi berkelanjutan tanpa terputus.</li>
+                        <li><strong>Samadhi:</strong> Kesadaran menyatu total dengan yang Ilahi.</li>
+                    </ol>
+                `,
+                quiz: [
+                    {
+                        q: "Tahapan dalam Ashtanga Yoga yang berfokus pada penarikan pancaindra dari pengaruh luar dinamakan...",
+                        options: ["A. Pranayama", "B. Pratyahara", "C. Asana", "D. Samadhi"],
+                        correct: 1,
+                        explanation: "Pratyahara adalah proses penarikan indra dari rangsangan objek-objek duniawi."
+                    }
+                ]
+            },
+            6: {
+                title: "Kuil Mimamsa & Vedanta",
+                subtitle: "Kewajiban Ritual Karma vs Kebijaksanaan Sejati (Jnana)",
+                color: "indigo",
+                icon: "fa-gopuram",
+                crystalName: "Kristal Vedānta",
+                material: `
+                    <p class="text-base font-semibold text-indigo-300">Puncak Filsafat Hindu: Kuil Mimamsa & Vedanta!</p>
+                    
+                    <div class="space-y-3">
+                        <div class="p-3 bg-slate-950 rounded-xl border border-amber-500/30">
+                            <strong class="text-amber-400">1. Mimamsa (Purva Mimamsa) — Maharshi Jaimini</strong>
+                            <p class="text-xs text-slate-300 mt-1">Mengutamakan bagian pelaksanaan kewajiban ritual Veda (<em>Karma Kanda</em>). Mengajarkan bahwa Yajna (kurban suci) dan pelaksanaan Dharma adalah jalan menjaga keharmonisan alam semesta.</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-950 rounded-xl border border-indigo-500/30">
+                            <strong class="text-indigo-400">2. Vedanta (Uttara Mimamsa) — Maharshi Badarayana</strong>
+                            <p class="text-xs text-slate-300 mt-1">Berakar dari bagian Upanishad (<em>Jnana Kanda</em>). Menjelaskan realitas mutlak tertinggi (<strong>Brahman</strong>), hakikat diri sejati (<strong>Atman</strong>), serta kebebasan abadi (<strong>Moksha</strong>).</p>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-slate-300 mt-2">Vedanta menegaskan mahavakya (pernyataan agung) seperti <em>"Aham Brahma Asmi"</em> (Aku adalah Brahman) dan <em>"Tat Tvam Asi"</em> (Engkau adalah Itu), menekankan kesatuan jiwa dengan Realitas Tertinggi.</p>
+                `,
+                quiz: [
+                    {
+                        q: "Filsafat Vedanta (Uttara Mimamsa) utamanya berakar pada bagian kitab Veda yang membahas pengetahuan rohani mendalam, yaitu...",
+                        options: ["A. Mantra Brahmana", "B. Upanishad", "C. Kalpa Sutra", "D. Jyotisha"],
+                        correct: 1,
+                        explanation: "Vedanta berarti 'Akhir dari Veda' yang merujuk pada ajaran filosofis Upanishad (Jnana Kanda)."
+                    }
+                ]
+            }
+        };
+
+        // EVALUATION EXAM QUESTIONS (10 QUESTIONS)
+        const examQuestions = [
+            {
+                topic: "Konsep Darsana",
+                q: "1. Kata 'Darsana' berasal dari kata Sanskerta 'dṛś' yang memiliki arti...",
+                options: ["A. Melakukan ritual", "B. Melihat atau memandang", "C. Membaca doa suci", "D. Membangun candi"],
+                correct: 1
+            },
+            {
+                topic: "Klasifikasi Darsana",
+                q: "2. Kelompok filsafat Hindu yang menerima secara penuh otoritas kebenaran Kitab Suci Veda disebut...",
+                options: ["A. Nastika", "B. Astika", "C. Charvaka", "D. Bauddha"],
+                correct: 1
+            },
+            {
+                topic: "Filsafat Nyaya",
+                q: "3. Siapakah tokoh pendiri utama sistem filsafat Nyaya?",
+                options: ["A. Maharshi Gautama", "B. Maharshi Kanada", "C. Maharshi Kapila", "D. Maharshi Patanjali"],
+                correct: 0
+            },
+            {
+                topic: "Nyaya - Pramana",
+                q: "4. Pengamatan langsung terhadap suatu objek menggunakan pancaindra dinamakan...",
+                options: ["A. Anumana", "B. Pratyaksa", "C. Upamana", "D. Sabda"],
+                correct: 1
+            },
+            {
+                topic: "Filsafat Vaisheshika",
+                q: "5. Teori mengenai partikel terkecil pembentuk alam semesta yang tidak dapat dibagi lagi (Paramāṇu) dicetuskan oleh...",
+                options: ["A. Maharshi Kanada", "B. Maharshi Jaimini", "C. Maharshi Badarayana", "D. Shankara"],
+                correct: 0
+            },
+            {
+                topic: "Filsafat Samkhya",
+                q: "6. Menurut filsafat Samkhya, alam semesta bersumber dari dua prinsip abadi yaitu...",
+                options: ["A. Brahman dan Maya", "B. Purusha dan Prakriti", "C. Dharma dan Adharma", "D. Karma dan Yajna"],
+                correct: 1
+            },
+            {
+                topic: "Samkhya - Tri Guna",
+                q: "7. Sifat dasar alam yang mencerminkan ketenangan, keheningan, dan kebijaksanaan adalah...",
+                options: ["A. Rajas", "B. Tamas", "C. Sattvam", "D. Ahamkara"],
+                correct: 2
+            },
+            {
+                topic: "Filsafat Yoga",
+                q: "8. Tujuan utama ajaran Yoga menurut Maharshi Patanjali adalah 'Citta Vritti Nirodha' yang artinya...",
+                options: [
+                    "A. Melakukan gerakan fisik fleksibel",
+                    "B. Pengendalian gejolak/gelombang pikiran",
+                    "C. Menghafal seluruh mantra Veda",
+                    "D. Membuat kurban ritual suci"
+                ],
+                correct: 1
+            },
+            {
+                topic: "Filsafat Mimamsa",
+                q: "9. Purva Mimamsa yang dirumuskan oleh Maharshi Jaimini sangat menekankan pada bagian Veda...",
+                options: ["A. Jnana Kanda (Pengetahuan)", "B. Karma Kanda (Ritual Yajna)", "C. Yoga Kanda", "D. Tantra Kanda"],
+                correct: 1
+            },
+            {
+                topic: "Filsafat Vedanta",
+                q: "10. Pernyataan agung 'Tat Tvam Asi' yang diajarkan dalam Vedanta bermakna...",
+                options: [
+                    "A. Segala sesuatu bersifat sementara",
+                    "B. Engkau adalah Itu (Jiwa/Atman identik dengan Brahman)",
+                    "C. Lakukan kewajibanmu tanpa pamrih",
+                    "D. Alam semesta hanya terdiri dari atom"
+                ],
+                correct: 1
+            }
+        ];
+
+
+        // NAVIGATION LOGIC
+        function navigateTo(viewName) {
+            playSound('click');
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
+            const target = document.getElementById('view-' + viewName);
+            if (target) target.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updatePlayerName(val) {
+            state.playerName = val || "Siswa Dharma";
+            const certName = document.getElementById('cert-player-name');
+            if (certName) certName.innerText = state.playerName;
+        }
+
+        // UPDATE CRYSTAL STATUS UI
+        function renderCrystalsUI() {
+            const bar = document.getElementById('crystal-bar');
+            bar.innerHTML = '';
+            let count = 0;
+
+            const colors = ['text-amber-400', 'text-cyan-400', 'text-emerald-400', 'text-purple-400', 'text-rose-400', 'text-indigo-400'];
+
+            for (let i = 0; i < 6; i++) {
+                const collected = state.progress[i];
+                if (collected) count++;
+
+                const gem = document.createElement('i');
+                gem.className = collected ? `fa-solid fa-gem ${colors[i]} animate-pulse` : 'fa-regular fa-gem text-slate-600';
+                bar.appendChild(gem);
+            }
+
+            document.getElementById('crystal-count-text').innerText = `${count}/6`;
+            
+            // Home progress update
+            const percent = Math.round((count / 6) * 100);
+            document.getElementById('home-progress-percent').innerText = `${percent}%`;
+            document.getElementById('home-progress-bar').style.width = `${percent}%`;
+
+            // Update Map Cards
+            for (let i = 1; i <= 6; i++) {
+                const card = document.getElementById(`card-level-${i}`);
+                const icon = document.getElementById(`status-icon-${i}`);
+                const isCompleted = state.progress[i - 1];
+                const isUnlocked = (i === 1) || state.progress[i - 2];
+
+                if (card && icon) {
+                    if (isCompleted) {
+                        icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+                        card.classList.remove('opacity-80');
+                    } else if (isUnlocked) {
+                        icon.innerHTML = '<i class="fa-solid fa-unlock text-amber-400"></i>';
+                        card.classList.remove('opacity-80');
+                    } else {
+                        icon.innerHTML = '<i class="fa-solid fa-lock text-slate-600"></i>';
+                        card.classList.add('opacity-80');
+                    }
+                }
+            }
+
+            // Enable Final Exam button if all 6 completed
+            const examBtn = document.getElementById('btn-final-exam');
+            if (count >= 6) {
+                examBtn.disabled = false;
+                examBtn.className = "w-full md:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-slate-950 font-bold text-sm shadow-lg cursor-pointer transition flex items-center justify-center gap-2 glow-amber";
+                examBtn.innerHTML = '<i class="fa-solid fa-door-open"></i> MASUK CANDI JNANA (Terbuka!)';
+            }
+        }
+
+        // LEVEL SELECTION
+        function selectLevel(lvlNum) {
+            // Check if unlocked
+            if (lvlNum > 1 && !state.progress[lvlNum - 2]) {
+                playSound('wrong');
+                alertModal("Wilayah Terkunci", "Selesaikan level sebelumnya untuk membuka wilayah filsafat ini!");
+                return;
+            }
+
+            playSound('click');
+            state.currentLevel = lvlNum;
+            const data = levelData[lvlNum];
+
+            document.getElementById('level-badge-tag').innerText = `LEVEL ${lvlNum}`;
+            document.getElementById('level-title-display').innerText = data.title;
+            document.getElementById('level-material-content').innerHTML = data.material;
+
+            const isDone = state.progress[lvlNum - 1];
+            document.getElementById('level-crystal-indicator').innerHTML = isDone 
+                ? '<i class="fa-solid fa-gem text-amber-400"></i>' 
+                : '<i class="fa-regular fa-gem text-slate-600"></i>';
+
+            // Build Level Challenge Box
+            renderLevelChallenge(lvlNum);
+
+            navigateTo('level');
+        }
+
+        // RENDER LEVEL QUIZ / CHALLENGE
+        function renderLevelChallenge(lvl) {
+            const data = levelData[lvl];
+            const box = document.getElementById('level-challenge-box');
+            box.innerHTML = '';
+
+            data.quiz.forEach((qObj, idx) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = "space-y-3 bg-slate-950 p-4 rounded-xl border border-slate-800";
+                
+                let optsHTML = '';
+                qObj.options.forEach((opt, oIdx) => {
+                    optsHTML += `
+                        <button onclick="checkLevelAnswer(${lvl}, ${idx}, ${oIdx})" class="quiz-opt-btn-${lvl}-${idx} w-full text-left p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs border border-slate-700 transition">
+                            ${opt}
+                        </button>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <p class="text-xs font-bold text-amber-300 leading-snug">${qObj.q}</p>
+                    <div class="space-y-2" id="opts-container-${lvl}-${idx}">${optsHTML}</div>
+                    <div id="feedback-${lvl}-${idx}" class="hidden p-2.5 rounded-lg text-xs leading-relaxed"></div>
+                `;
+
+                box.appendChild(qDiv);
+            });
+        }
+
+        function checkLevelAnswer(lvl, qIdx, selectedOpt) {
+            const data = levelData[lvl];
+            const qObj = data.quiz[qIdx];
+            const feedbackDiv = document.getElementById(`feedback-${lvl}-${qIdx}`);
+            const btns = document.querySelectorAll(`.quiz-opt-btn-${lvl}-${qIdx}`);
+
+            btns.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === qObj.correct) {
+                    btn.classList.add('bg-emerald-950', 'border-emerald-500', 'text-emerald-300');
+                } else if (idx === selectedOpt) {
+                    btn.classList.add('bg-rose-950', 'border-rose-500', 'text-rose-300');
+                }
+            });
+
+            feedbackDiv.classList.remove('hidden');
+
+            if (selectedOpt === qObj.correct) {
+                playSound('correct');
+                feedbackDiv.className = "p-2.5 rounded-lg text-xs leading-relaxed bg-emerald-950/80 border border-emerald-500/50 text-emerald-200";
+                feedbackDiv.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> <strong>Benar!</strong> ${qObj.explanation}`;
+                
+                // Mark level completed & grant crystal
+                if (!state.progress[lvl - 1]) {
+                    state.progress[lvl - 1] = true;
+                    playSound('unlock');
+                    renderCrystalsUI();
+                    
+                    setTimeout(() => {
+                        alertModal("KRISTAL DITEMUKAN!", `Selamat! Kamu berhasil meraih **${data.crystalName}** di ${data.title}! Wilayah berikutnya telah terbuka.`);
+                        document.getElementById('level-crystal-indicator').innerHTML = '<i class="fa-solid fa-gem text-amber-400"></i>';
+                    }, 500);
+                }
+            } else {
+                playSound('wrong');
+                feedbackDiv.className = "p-2.5 rounded-lg text-xs leading-relaxed bg-rose-950/80 border border-rose-500/50 text-rose-200";
+                feedbackDiv.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400 mr-1"></i> <strong>Kurang Tepat.</strong> ${qObj.explanation}`;
+            }
+        }
+
+
+        // EXAM LOGIC
+        function startFinalEvaluation() {
+            if (!state.progress.every(p => p === true)) {
+                alertModal("Candi Terkunci", "Kamu harus mengumpulkan keenam Kristal Pengetahuan terlebih dahulu!");
+                return;
+            }
+
+            playSound('click');
+            state.examIndex = 0;
+            state.examScore = 0;
+            state.examAnswers = [];
+
+            document.getElementById('exam-container').classList.remove('hidden');
+            document.getElementById('exam-result-box').classList.add('hidden');
+
+            renderExamQuestion();
+            navigateTo('eval');
+        }
+
+        function renderExamQuestion() {
+            const q = examQuestions[state.examIndex];
+            
+            document.getElementById('exam-progress-text').innerText = `Soal ${state.examIndex + 1} dari 10`;
+            document.getElementById('exam-score-live').innerText = `Skor: ${state.examScore}`;
+            document.getElementById('exam-progress-bar').style.width = `${((state.examIndex + 1) / 10) * 100}%`;
+            document.getElementById('exam-topic-tag').innerText = q.topic;
+            document.getElementById('exam-question-text').innerText = q.q;
+
+            const grid = document.getElementById('exam-options-grid');
+            grid.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "exam-opt-btn w-full text-left p-3.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 text-sm border border-slate-800 transition font-medium flex items-center justify-between";
+                btn.innerHTML = `<span>${opt}</span> <i class="fa-regular fa-circle text-slate-600 text-xs"></i>`;
+                btn.onclick = () => selectExamOption(idx, btn);
+                grid.appendChild(btn);
+            });
+
+            const nextBtn = document.getElementById('btn-exam-next');
+            nextBtn.disabled = true;
+            nextBtn.className = "px-6 py-3 rounded-xl bg-slate-800 text-slate-500 font-bold text-sm border border-slate-700 cursor-not-allowed transition";
+        }
+
+        let selectedExamOpt = null;
+
+        function selectExamOption(optIdx, btnEl) {
+            playSound('click');
+            selectedExamOpt = optIdx;
+
+            document.querySelectorAll('.exam-opt-btn').forEach(b => {
+                b.className = "exam-opt-btn w-full text-left p-3.5 rounded-xl bg-slate-950 hover:bg-slate-800 text-slate-200 text-sm border border-slate-800 transition font-medium flex items-center justify-between";
+            });
+
+            btnEl.className = "exam-opt-btn w-full text-left p-3.5 rounded-xl bg-amber-500/20 text-amber-300 text-sm border border-amber-500 transition font-bold flex items-center justify-between";
+
+            const nextBtn = document.getElementById('btn-exam-next');
+            nextBtn.disabled = false;
+            nextBtn.className = "px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm shadow-lg cursor-pointer transition flex items-center gap-1";
+        }
+
+        function nextExamQuestion() {
+            if (selectedExamOpt === null) return;
+
+            const q = examQuestions[state.examIndex];
+            if (selectedExamOpt === q.correct) {
+                state.examScore += 10;
+            }
+
+            state.examAnswers.push(selectedExamOpt);
+            selectedExamOpt = null;
+
+            state.examIndex++;
+
+            if (state.examIndex < examQuestions.length) {
+                renderExamQuestion();
+            } else {
+                finishExam();
+            }
+        }
+
+        function finishExam() {
+            playSound('unlock');
+            document.getElementById('exam-container').classList.add('hidden');
+            document.getElementById('exam-result-box').classList.remove('hidden');
+
+            const score = state.examScore;
+            const correctCount = score / 10;
+
+            document.getElementById('result-score').innerText = score;
+            document.getElementById('result-correct').innerText = `${correctCount}/10`;
+
+            let titleText = "Penjelajah Darsana";
+            if (score >= 90) titleText = "Mahaguru Darsana";
+            else if (score >= 70) titleText = "Pandita Jnana";
+            else if (score >= 50) titleText = "Brahmacari Utama";
+
+            document.getElementById('result-title').innerText = titleText;
+            document.getElementById('cert-player-name').innerText = state.playerName;
+        }
+
+        function resetPetualangan() {
+            state.progress = [false, false, false, false, false, false];
+            renderCrystalsUI();
+            navigateTo('home');
+        }
+
+        // MODAL HELPERS
+        function openModal(id) {
+            playSound('click');
+            document.getElementById(id).classList.remove('hidden');
+            if (id === 'modal-pencapaian') renderAchievementsList();
+        }
+
+        function closeModal(id) {
+            playSound('click');
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function alertModal(title, text) {
+            const overlay = document.createElement('div');
+            overlay.className = "fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4";
+            overlay.innerHTML = `
+                <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-dharmachakra"></i>
+                    </div>
+                    <h3 class="font-title font-bold text-lg text-amber-300">${title}</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">${text}</p>
+                    <button onclick="this.parentElement.parentElement.remove()" class="px-5 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs w-full">Lanjutkan</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function renderAchievementsList() {
+            const list = document.getElementById('achievements-list');
+            list.innerHTML = '';
+
+            const achs = [
+                { title: "Langkah Pertama", desc: "Membuka wilayah Gerbang Darsana.", done: state.progress[0] },
+                { title: "Ahli Logika", desc: "Meraih Kristal Nyaya melalui 4 Pramana.", done: state.progress[1] },
+                { title: "Analis Atomik", desc: "Menguasai 7 Padartha di Lab Vaisheshika.", done: state.progress[2] },
+                { title: "Keseimbangan Tri Guna", desc: "Memahami Purusha & Prakriti di Samkhya.", done: state.progress[3] },
+                { title: "Pengendali Pikiran", desc: "Menguasai Ashtanga Yoga di Puncak Yoga.", done: state.progress[4] },
+                { title: "Puncak Kebijaksanaan", desc: "Menuntaskan filsafat Mimamsa & Vedanta.", done: state.progress[5] },
+            ];
+
+            achs.forEach(a => {
+                const item = document.createElement('div');
+                item.className = `p-3 rounded-xl border flex items-center justify-between text-xs ${a.done ? 'bg-amber-950/40 border-amber-500/40 text-amber-200' : 'bg-slate-950 border-slate-800 text-slate-500'}`;
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <i class="${a.done ? 'fa-solid fa-trophy text-amber-400' : 'fa-solid fa-lock text-slate-600'} text-base"></i>
+                        <div>
+                            <p class="font-bold">${a.title}</p>
+                            <p class="text-[11px] opacity-80">${a.desc}</p>
+                        </div>
+                    </div>
+                    <span>${a.done ? '<i class="fa-solid fa-check text-emerald-400"></i>' : 'Terkunci'}</span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // INITIALIZATION
+        window.onload = function() {
+            renderCrystalsUI();
+            updatePlayerName("Siswa Dharma");
+        };
+    </script>
+</body>
+</html>
